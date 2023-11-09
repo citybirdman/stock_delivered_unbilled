@@ -10,4 +10,4 @@ Like **Stock Received But Not Billed** in the Purchase Cycle, this app will enab
 **Stock Delivered but Not Billed Account** (an Asset type account) is configurable in the Company doctype like Stock Received But Not Billed.
 
 #### License
-mit
+MIT License
