@@ -68,7 +68,7 @@ app_license = "mit"
 # ------------
 
 # before_install = "stock_delivered_unbilled.install.before_install"
-# after_install = "stock_delivered_unbilled.install.after_install"
+after_install = "stock_delivered_unbilled.patches.add_default_parking_account_field.execute"
 
 # Uninstallation
 # ------------
@@ -114,9 +114,19 @@ app_license = "mit"
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-#	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+	"Sales Invoice": "stock_delivered_unbilled.stock_delivered_unbilled.overrides.sales_invoice.CustomSalesInvoice",
+	"Delivery Note": "stock_delivered_unbilled.stock_delivered_unbilled.overrides.delivery_note.CustomDeliveryNote"
+}
+
+from erpnext.stock import get_item_details as original_get_item_details
+from stock_delivered_unbilled.stock_delivered_unbilled.overrides import get_basic_details as overridden_get_basic_details
+original_get_item_details.get_basic_details = overridden_get_basic_details.get_basic_details
+
+
+from erpnext.stock.doctype.repost_item_valuation import repost_item_valuation as original_repost_item_valuation
+from stock_delivered_unbilled.stock_delivered_unbilled.overrides import repost_item_valuation as overridden_repost_item_valuation
+original_repost_item_valuation.repost = overridden_repost_item_valuation.repost
 
 # Document Events
 # ---------------
