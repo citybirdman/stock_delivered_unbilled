@@ -123,11 +123,6 @@ from erpnext.stock import get_item_details as original_get_item_details
 from stock_delivered_unbilled.stock_delivered_unbilled.overrides import get_basic_details as overridden_get_basic_details
 original_get_item_details.get_basic_details = overridden_get_basic_details.get_basic_details
 
-
-from erpnext.stock.doctype.repost_item_valuation import repost_item_valuation as original_repost_item_valuation
-from stock_delivered_unbilled.stock_delivered_unbilled.overrides import repost_item_valuation as overridden_repost_item_valuation
-original_repost_item_valuation.repost = overridden_repost_item_valuation.repost
-
 # Document Events
 # ---------------
 # Hook on document methods and events
@@ -143,23 +138,11 @@ original_repost_item_valuation.repost = overridden_repost_item_valuation.repost
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-#	"all": [
-#		"stock_delivered_unbilled.tasks.all"
-#	],
-#	"daily": [
-#		"stock_delivered_unbilled.tasks.daily"
-#	],
-#	"hourly": [
-#		"stock_delivered_unbilled.tasks.hourly"
-#	],
-#	"weekly": [
-#		"stock_delivered_unbilled.tasks.weekly"
-#	],
-#	"monthly": [
-#		"stock_delivered_unbilled.tasks.monthly"
-#	],
-# }
+scheduler_events = {
+	"daily_long": [
+		"stock_delivered_unbilled.stock_delivered_unbilled.overrides.repost_item_valuation.repost_invoice_entries",
+	]
+}
 
 # Testing
 # -------

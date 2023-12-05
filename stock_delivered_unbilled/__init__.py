@@ -1,6 +1,2 @@
 
 __version__ = '0.0.1'
-
-from erpnext.stock.doctype.repost_item_valuation import repost_item_valuation as original_repost_item_valuation
-from stock_delivered_unbilled.stock_delivered_unbilled.overrides import repost_item_valuation as overridden_repost_item_valuation
-original_repost_item_valuation.repost = overridden_repost_item_valuation.repost

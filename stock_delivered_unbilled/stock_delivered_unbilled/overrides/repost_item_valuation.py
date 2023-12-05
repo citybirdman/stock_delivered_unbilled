@@ -1,6 +1,13 @@
 import frappe
 from frappe import _
-from erpnext.stock.doctype.repost_item_valuation.repost_item_valuation import repost_sl_entries, repost_gl_entries, notify_error_to_stock_managers, _get_directly_dependent_vouchers
+from erpnext.stock.doctype.repost_item_valuation.repost_item_valuation import (
+	repost_sl_entries, 
+	repost_gl_entries, 
+	notify_error_to_stock_managers, 
+	_get_directly_dependent_vouchers,
+	in_configured_timeslot
+)
+from frappe.utils import cint, get_link_to_form, get_weekday, getdate, now, nowtime
 from erpnext.accounts.general_ledger import toggle_debit_credit_if_negative
 from erpnext.accounts.utils import get_future_stock_vouchers, repost_gle_for_stock_vouchers, _delete_accounting_ledger_entries
 from erpnext.stock.stock_ledger import (
@@ -9,8 +16,36 @@ from erpnext.stock.stock_ledger import (
 	repost_future_sle,
 )
 
+from rq.timeouts import JobTimeoutException
+from frappe.exceptions import QueryDeadlockError, QueryTimeoutError
 
-def repost(doc):
+RecoverableErrors = (JobTimeoutException, QueryDeadlockError, QueryTimeoutError)
+
+
+def repost_invoice_entries():
+	"""
+	Reposts Sales Invoices related to 'Repost Item Valuation' entries in queue.
+	Called hourly via hooks.py.
+	Called 1 hour post to the actual repost_entries
+	"""
+
+	riv_entries = frappe.db.sql(
+		""" SELECT name from `tabRepost Item Valuation`
+		WHERE status in ('Completed') and creation <= %s and docstatus = 1 and modified > now() - interval 24 hour
+		ORDER BY timestamp(posting_date, posting_time) asc, creation asc, status asc
+		""",
+		now(),
+		as_dict=1,
+		)
+
+	for row in riv_entries:
+		doc = frappe.get_doc("Repost Item Valuation", row.name)
+		if doc.status in ("Completed"):
+			repost_invoice(doc)
+
+	return
+
+def repost_invoice(doc):
 	try:
 		if not frappe.db.exists("Repost Item Valuation", doc.name):
 			return
@@ -18,16 +53,11 @@ def repost(doc):
 		# This is to avoid TooManyWritesError in case of large reposts
 		frappe.db.MAX_WRITES_PER_TRANSACTION *= 4
 
-		doc.set_status("In Progress")
 		if not frappe.flags.in_test:
 			frappe.db.commit()
-
-		repost_sl_entries(doc)
-		repost_gl_entries(doc)
+		
 		_post_affected_sales_invoices(doc)
-
-		doc.set_status("Completed")
-
+		
 	except Exception as e:
 		if frappe.flags.in_test:
 			# Don't silently fail in tests,
@@ -36,7 +66,7 @@ def repost(doc):
 
 		frappe.db.rollback()
 		traceback = frappe.get_traceback()
-		doc.log_error("Unable to repost item valuation")
+		doc.log_error("Unable to repost item valuation for affected invoices")
 
 		message = frappe.message_log.pop() if frappe.message_log else ""
 		if traceback:
@@ -49,7 +79,6 @@ def repost(doc):
 
 		if outgoing_email_account and not isinstance(e, RecoverableErrors):
 			notify_error_to_stock_managers(doc, message)
-			doc.set_status("Failed")
 	finally:
 		if not frappe.flags.in_test:
 			frappe.db.commit()
