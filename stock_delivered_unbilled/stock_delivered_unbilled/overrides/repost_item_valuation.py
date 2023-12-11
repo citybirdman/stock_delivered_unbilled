@@ -91,7 +91,7 @@ def _post_affected_sales_invoices(doc):
 	for affected_transaction in all_affected_transactions:
 		document_type, document_name = affected_transaction
 		if document_type == "Delivery Note":
-			invoice_list = frappe.get_list("Sales Invoice Item", fields=["name", "parent"], filters={"delivery_note": document_name})
+			invoice_list = frappe.get_all("Sales Invoice Item", fields=["name", "parent"], filters={"delivery_note": document_name})
 			for invoice in invoice_list:
 				docstatus = frappe.db.get_value("Sales Invoice", invoice.parent, "docstatus")
 				if docstatus == 1:
