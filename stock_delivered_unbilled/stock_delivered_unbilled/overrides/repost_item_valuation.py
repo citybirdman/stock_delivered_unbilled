@@ -102,3 +102,11 @@ def _post_affected_sales_invoices(doc):
 		expected_gle = toggle_debit_credit_if_negative(voucher_obj.get_gl_entries())
 		_delete_accounting_ledger_entries("Sales Invoice", inv)
 		voucher_obj.make_gl_entries(gl_entries=expected_gle, from_repost=True)
+
+def validate_expense_accoount(self,method):
+	stock_delivered_but_not_billed_account = None
+	stock_delivered_but_not_billed_account = frappe.db.get_value("Company", args.company, "stock_delivered_but_not_billed")
+
+	if stock_delivered_but_not_billed_account:
+		for item in self.items:
+			item.expense_account = stock_delivered_but_not_billed_account

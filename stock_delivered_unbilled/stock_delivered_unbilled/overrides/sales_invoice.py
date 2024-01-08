@@ -54,9 +54,9 @@ class CustomSalesInvoice(SalesInvoice):
 								{
 									"account": dn_expense_account,
 									"against": item.expense_account,
-									"credit": flt(valuation_amount, item.precision("base_net_amount")),
+									"credit": flt(valuation_amount),
 									"credit_in_account_currency": (
-										flt(valuation_amount, item.precision("base_net_amount"))
+										flt(valuation_amount)
 									),
 									"cost_center": item.cost_center,
 								},
@@ -69,9 +69,9 @@ class CustomSalesInvoice(SalesInvoice):
 								{
 									"account": item.expense_account,
 									"against": dn_expense_account,
-									"debit": flt(valuation_amount, item.precision("base_net_amount")),
+									"debit": flt(valuation_amount),
 									"debit_in_account_currency": (
-										flt(valuation_amount, item.precision("base_net_amount"))
+										flt(valuation_amount)
 									),
 									"cost_center": item.cost_center,
 								},

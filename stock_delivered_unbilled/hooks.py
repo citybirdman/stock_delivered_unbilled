@@ -127,19 +127,17 @@ original_get_item_details.get_basic_details = overridden_get_basic_details.get_b
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-#	"*": {
-#		"on_update": "method",
-#		"on_cancel": "method",
-#		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Delivery Note": {
+		"validate": "stock_delivered_unbilled.stock_delivered_unbilled.overrides.repost_item_valuation.validate_expense_accoount",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
 
 scheduler_events = {
-	"daily_long": [
+	"hourly_long": [
 		"stock_delivered_unbilled.stock_delivered_unbilled.overrides.repost_item_valuation.repost_invoice_entries",
 	]
 }
