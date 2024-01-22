@@ -105,7 +105,7 @@ def _post_affected_sales_invoices(doc):
 
 def validate_expense_accoount(self,method):
 	stock_delivered_but_not_billed_account = None
-	stock_delivered_but_not_billed_account = frappe.db.get_value("Company", args.company, "stock_delivered_but_not_billed")
+	stock_delivered_but_not_billed_account = frappe.db.get_value("Company", self.company, "stock_delivered_but_not_billed")
 
 	if stock_delivered_but_not_billed_account:
 		for item in self.items:
