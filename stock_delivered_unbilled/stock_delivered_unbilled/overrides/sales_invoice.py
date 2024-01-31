@@ -18,7 +18,13 @@ class CustomSalesInvoice(SalesInvoice):
 		self.make_internal_transfer_gl_entries(gl_entries)
 
 		self.make_item_gl_entries(gl_entries)
-		self.stock_delivered_but_not_billed_gl_entries(gl_entries)
+		disable_sdbnb_in_sr = frappe.db.get_value("Company", self.company, "disable_sdbnb_in_sr")
+		if not self.is_return:
+			self.stock_delivered_but_not_billed_gl_entries(gl_entries)
+		else:
+			if not disable_sdbnb_in_sr:
+				stock_delivered_but_not_billed_gl_entries(gl_entries)
+
 		self.make_precision_loss_gl_entry(gl_entries)
 		self.make_discount_gl_entries(gl_entries)
 
