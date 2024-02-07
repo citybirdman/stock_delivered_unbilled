@@ -110,7 +110,11 @@ def get_basic_details(args, item, overwrite_warehouse=True):
 	stock_delivered_but_not_billed_account = frappe.db.get_value("Company", args.company, "stock_delivered_but_not_billed")
 
 	if args.get("doctype") == "Delivery Note" and stock_delivered_but_not_billed_account:
-		expense_account = stock_delivered_but_not_billed_account
+		disable_sdbnb_in_sr = frappe.db.get_value("Company", args.company, "disable_sdbnb_in_sr")
+		if disable_sdbnb_in_sr and args.get("is_return"):
+			pass
+		else:
+			expense_account = stock_delivered_but_not_billed_account
 
 	# Set the UOM to the Default Sales UOM or Default Purchase UOM if configured in the Item Master
 	if not args.get("uom"):
