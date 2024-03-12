@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "allow_copy": 1,
+ "creation": "2024-03-13 01:49:32.913766",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "repost_item_valuation",
+  "affected_sales_invoice",
+  "completed"
+ ],
+ "fields": [
+  {
+   "fieldname": "repost_item_valuation",
+   "fieldtype": "Link",
+   "label": "Repost Item Valuation",
+   "options": "Repost Item Valuation"
+  },
+  {
+   "default": "0",
+   "fieldname": "completed",
+   "fieldtype": "Check",
+   "label": "Completed"
+  },
+  {
+   "fieldname": "affected_sales_invoice",
+   "fieldtype": "Link",
+   "label": "Affected Sales Invoice",
+   "options": "Sales Invoice"
+  }
+ ],
+ "hide_toolbar": 1,
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-03-13 02:01:21.156871",
+ "modified_by": "Administrator",
+ "module": "Stock Delivered Unbilled",
+ "name": "Repost Sales Invoice",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "read_only": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
