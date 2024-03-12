@@ -36,7 +36,7 @@ def repost_invoice_entries():
 	for row in riv_entries:
 		voucher_obj = frappe.get_doc("Sales Invoice", row.affected_sales_invoice)
 		expected_gle = toggle_debit_credit_if_negative(voucher_obj.get_gl_entries())
-		_delete_accounting_ledger_entries("Sales Invoice", inv)
+		_delete_accounting_ledger_entries("Sales Invoice", row.affected_sales_invoice)
 		voucher_obj.make_gl_entries(gl_entries=expected_gle, from_repost=True)
 		frappe.db.commit()
 		frappe.db.set_value('Repost Sales Invoice', row.name, 'completed', 1)
