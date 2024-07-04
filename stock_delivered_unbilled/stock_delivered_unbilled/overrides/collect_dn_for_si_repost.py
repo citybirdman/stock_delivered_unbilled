@@ -68,7 +68,7 @@ def _queue_affected_sales_invoices(doc):
 
 	for inv in affected_invoices:
 		if not frappe.db.exists(
-			"Repost Sales Invoice", {"repost_item_valuation": doc.name, "affected_sales_invoice": inv}):
+			"Repost Sales Invoice", {"affected_sales_invoice": inv, "completed": 0}):
 			rsi = frappe.new_doc("Repost Sales Invoice")
 			rsi.repost_item_valuation = doc.name
 			rsi.affected_sales_invoice = inv
