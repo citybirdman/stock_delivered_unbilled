@@ -31,7 +31,7 @@
    "options": "Sales Invoice"
   }
  ],
- "hide_toolbar": 1,
+ "hide_toolbar": 0,
  "in_create": 0,
  "index_web_pages_for_search": 1,
  "links": [],
