@@ -137,10 +137,12 @@ doc_events = {
 # ---------------
 
 scheduler_events = {
-	"hourly_long": [
-		"stock_delivered_unbilled.stock_delivered_unbilled.overrides.collect_dn_for_si_repost.queue_affected_sales_invoices",
-		"stock_delivered_unbilled.stock_delivered_unbilled.overrides.repost_item_valuation.repost_invoice_entries",
-	]
+	"cron":{
+		"0 36 * * *": [
+			"stock_delivered_unbilled.stock_delivered_unbilled.overrides.collect_dn_for_si_repost.queue_affected_sales_invoices",
+			"stock_delivered_unbilled.stock_delivered_unbilled.overrides.repost_item_valuation.repost_invoice_entries",
+		]
+	}
 }
 
 # Testing
